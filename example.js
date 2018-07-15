@@ -31,11 +31,11 @@ var storage = multi(function (offset, cb) {
   }
 })
 
-storage.write(0, Buffer('hello world 1'))
-storage.write(4000, Buffer('hello world 2'))
+storage.write(0, Buffer.from('hello world 1'))
+storage.write(4000, Buffer.from('hello world 2'))
 // storage.write(8000, Buffer('hello world 4'))
-storage.write(10000, Buffer('hello world 34'), function () {
+storage.write(10000, Buffer.from('hello world 34'), function () {
   storage.read(10000, 11, console.log)
 })
 
-storage.write(50000, Buffer('hi'))
+storage.write(50000, Buffer.from('hi'))

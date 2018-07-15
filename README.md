@@ -28,7 +28,7 @@ var storage = multi(function (offset, cb) {
   })
 })
 
-storage.write(0, Buffer('hello world'), function (err) {
+storage.write(0, Buffer.from('hello world'), function (err) {
   if (err) throw err
   storage.read(0, 11, function (err, buf) {
     if (err) throw err
