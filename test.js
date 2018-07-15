@@ -16,7 +16,7 @@ test('Storage(open)', function (t) {
       cb(null, {
         start: index * 10,
         end: index * 10 + 10,
-        storage: ram(new Buffer('yuss'))
+        storage: ram(Buffer.from('yuss'))
       })
     }
   })
@@ -24,7 +24,7 @@ test('Storage(open)', function (t) {
     t.ok(err)
     storage.read(10, 4, function (err, buf) {
       t.error(err)
-      t.deepEqual(buf, new Buffer('yuss'))
+      t.deepEqual(buf, Buffer.from('yuss'))
     })
   })
 })
@@ -50,7 +50,7 @@ test('big write', function (t) {
     storage: ram()
   })
 
-  var buf = new Buffer(25)
+  var buf = Buffer.alloc(25)
 
   storage.write(0, buf, function (err) {
     t.error(err)
@@ -70,14 +70,14 @@ test('read + write', function (t) {
     cb(null, {
       start: index * 10,
       end: index * 10 + 10,
-      storage: ram(new Buffer(10))
+      storage: ram(Buffer.alloc(10))
     })
   })
-  storage.write(0, new Buffer('hello world'), function (err) {
+  storage.write(0, Buffer.from('hello world'), function (err) {
     t.error(err)
     storage.read(0, 11, function (err, buf) {
       t.error(err)
-      t.deepEqual(buf, new Buffer('hello world'))
+      t.deepEqual(buf, Buffer.from('hello world'))
     })
   })
 })
@@ -85,7 +85,7 @@ test('read + write', function (t) {
 test('del', function (t) {
   var storage = Storage(function (offset, cb) {
     var index = Math.floor(offset / 10)
-    var buf = new Buffer(10)
+    var buf = Buffer.alloc(10)
     buf.fill(0)
     cb(null, {
       start: index * 10,
@@ -94,13 +94,13 @@ test('del', function (t) {
     })
   })
 
-  storage.write(0, new Buffer('hello world'), function (err) {
+  storage.write(0, Buffer.from('hello world'), function (err) {
     t.error(err)
     storage.del(0, 10, function (err) {
       t.error(err)
       storage.read(0, 11, function (err, buf) {
         t.error(err)
-        var target = new Buffer(11)
+        var target = Buffer.alloc(11)
         target.fill(0)
         target[target.length - 1] = 'd'.charCodeAt(0)
         t.same(buf, target)
@@ -116,11 +116,11 @@ test('more than limit', function (t) {
     cb(null, {
       start: index * 10,
       end: index * 10 + 10,
-      storage: ram(new Buffer(10))
+      storage: ram(Buffer.alloc(10))
     })
   })
 
-  storage.write(0, new Buffer('hello world'), function (err) {
+  storage.write(0, Buffer.from('hello world'), function (err) {
     t.error(err)
     t.same(storage.stores.length, 1)
     t.end()
@@ -129,12 +129,12 @@ test('more than limit', function (t) {
 
 test('binary search', function (t) {
   var storage = Storage()
-  var target = ram(new Buffer(28))
+  var target = ram(Buffer.alloc(28))
 
   storage.add({
     start: 42,
     end: 46,
-    storage: ram(new Buffer(4))
+    storage: ram(Buffer.alloc(4))
   })
 
   storage.add({
@@ -146,13 +146,13 @@ test('binary search', function (t) {
   storage.add({
     start: 0,
     end: 14,
-    storage: ram(new Buffer(14))
+    storage: ram(Buffer.alloc(14))
   })
 
-  storage.write(15, new Buffer('hi'), function () {
+  storage.write(15, Buffer.from('hi'), function () {
     target.read(1, 2, function (err, buf) {
       t.error(err)
-      t.same(buf, new Buffer('hi'))
+      t.same(buf, Buffer.from('hi'))
       t.end()
     })
   })
@@ -180,7 +180,7 @@ test('end', function (t) {
   })
 
   function create () {
-    var childStorage = ram(new Buffer(10))
+    var childStorage = ram(Buffer.alloc(10))
 
     childStorage.end = function (opts, cb) {
       t.ok(true)
